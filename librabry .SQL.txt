@@ -1,0 +1,80 @@
+
+CREATE TABLE Book (
+  BookID INT PRIMARY KEY,
+  Title VARCHAR(100),
+  Author VARCHAR(100),
+  Publisher VARCHAR(100),
+  YearPublished INT
+);
+CREATE TABLE Member (
+  MemberID INT PRIMARY KEY,
+  Name VARCHAR(100),
+  Phone VARCHAR(20),
+  Email VARCHAR(100)
+);
+
+
+CREATE TABLE Borrowing (
+  BorrowID INT PRIMARY KEY,
+  BookID INT,
+  MemberID INT,
+  BorrowDate DATE,
+  ReturnDate DATE,
+  FOREIGN KEY (BookID) REFERENCES Book(BookID),
+  FOREIGN KEY (MemberID) REFERENCES Member(MemberID)
+);
+
+
+INSERT INTO Book VALUES
+(1, 'The Great Gatsby', 'F. Scott Fitzgerald', 'Scribner', 1925),
+(2, '1984', 'George Orwell', 'Secker & Warburg', 1949),
+(3, 'To Kill a Mockingbird', 'Harper Lee', 'J.B. Lippincott', 1960),
+(4, 'The Catcher in the Rye', 'J.D. Salinger', 'Little, Brown', 1951),
+(5, 'Pride and Prejudice', 'Jane Austen', 'T. Egerton', 1813),
+(6, 'Harry Potter', 'J.K. Rowling', 'Bloomsbury', 1997),
+(7, 'Moby Dick', 'Herman Melville', 'Harper & Brothers', 1851),
+(8, 'The Hobbit', 'J.R.R. Tolkien', 'Allen & Unwin', 1937),
+(9, 'The Alchemist', 'Paulo Coelho', 'HarperOne', 1988),
+(10, 'Inferno', 'Dan Brown', 'Doubleday', 2013);
+
+INSERT INTO Member VALUES
+(101, 'Ahmed Ali', '01000111222', 'ahmed@example.com'),
+(102, 'Sara Mostafa', '01022334455', 'sara@example.com'),
+(103, 'Mohamed Adel', '01133445566', 'mohamed@example.com'),
+(104, 'Laila Hassan', '01255667788', 'laila@example.com'),
+(105, 'Khaled Fathy', '01099887766', 'khaled@example.com'),
+(106, 'Yasmine Tarek', '01066554433', 'yasmine@example.com'),
+(107, 'Omar Sherif', '01144332211', 'omar@example.com'),
+(108, 'Mona Hany', '01277889900', 'mona@example.com'),
+(109, 'Tamer Adel', '01011335566', 'tamer@example.com'),
+(110, 'Aya Saeed', '01122334455', 'aya@example.com');
+
+
+INSERT INTO Borrowing VALUES
+(1, 1, 101, '2025-05-01', '2025-05-10'),
+(2, 2, 102, '2025-05-03', NULL),
+(3, 3, 103, '2025-05-04', '2025-05-12'),
+(4, 4, 104, '2025-05-05', NULL),
+(5, 5, 105, '2025-05-06', NULL),
+(6, 6, 106, '2025-05-06', '2025-05-13'),
+(7, 7, 107, '2025-05-07', NULL),
+(8, 8, 108, '2025-05-08', NULL),
+(9, 9, 109, '2025-05-09', NULL),
+(10, 10, 110, '2025-05-10', NULL);
+
+SELECT m.Name, b.Title, br.BorrowDate
+FROM Borrowing br
+JOIN Member m ON br.MemberID = m.MemberID
+JOIN Book b ON br.BookID = b.BookID
+WHERE br.ReturnDate IS NULL;
+
+SELECT m.Name, COUNT(br.BorrowID) AS TotalBorrowed
+FROM Member m
+JOIN Borrowing br ON m.MemberID = br.MemberID
+GROUP BY m.Name;
+
+SELECT b.Title, COUNT(br.BookID) AS TimesBorrowed
+FROM Book b
+JOIN Borrowing br ON b.BookID = br.BookID
+GROUP BY b.Title
+HAVING COUNT(br.BookID) > 1;
